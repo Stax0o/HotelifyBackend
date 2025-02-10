@@ -17,6 +17,6 @@ public class BalanceTopupService {
     }
 
     public List<BalanceTopup> findAllTopUpsByUserId(Long id) {
-        return balanceTopupRepository.findAllByUser_Id(id);
+        return balanceTopupRepository.findAllByUserId(id);
     }
 }

@@ -6,5 +6,5 @@ import org.stax0o.project.hotelifybackend.entity.BalanceTopup;
 import java.util.List;
 
 public interface BalanceTopupRepository extends JpaRepository<BalanceTopup, Long> {
-    List<BalanceTopup> findAllByUser_Id(Long id);
+    List<BalanceTopup> findAllByUserId(Long id);
 }
