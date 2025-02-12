@@ -20,6 +20,7 @@ public class User {
 
     @NotBlank(message = "Email не должен быть пустым")
     @Email(message = "Некорректный формат email")
+    @Column(unique = true)
     private String email;
 
     @Column(name = "first_name")
@@ -38,6 +39,7 @@ public class User {
 
     @NotBlank(message = "Телефон не должен быть пустым")
     @Size(min = 5, max = 20, message = "Длина строки должна быть от 5 до 20 символов")
+    @Column(unique = true)
     private String phone;
 
     private Double balance = 0.0;
