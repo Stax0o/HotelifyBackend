@@ -10,6 +10,4 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(@NotBlank(message = "Email не должен быть пустым") @Email(message = "Некорректный формат email") String email);
-
-    void deleteByEmail(@NotBlank(message = "Email не должен быть пустым") @Email(message = "Некорректный формат email") String email);
 }

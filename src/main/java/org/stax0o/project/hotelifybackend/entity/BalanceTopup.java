@@ -5,7 +5,6 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.stax0o.project.hotelifybackend.enums.PaymentMethod;
-import org.stax0o.project.hotelifybackend.enums.PaymentStatus;
 
 import java.time.LocalDate;
 
@@ -27,7 +26,6 @@ public class BalanceTopup {
 
     @DecimalMin(value = "1.0")
     private Double amount;
-
 
     @Column(name = "created_at")
     private LocalDate createdAt = LocalDate.now();

@@ -3,7 +3,6 @@ package org.stax0o.project.hotelifybackend.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.stax0o.project.hotelifybackend.entity.User;
@@ -24,8 +23,17 @@ public class UserController {
     }
 
     @GetMapping
-    public User findByEmail(@RequestParam @Email(message = "Некорректный формат email") String email) {
-        return userService.findByEmail(email);
+    public User findByIdOrEmail(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) @Email(message = "Некорректный формат email") String email) {
+
+        if (id != null) {
+            return userService.findById(id);
+        } else if (email != null) {
+            return userService.findByEmail(email);
+        } else {
+            throw new IllegalArgumentException("Необходимо передать email или id");
+        }
     }
 
     @GetMapping("/all")
@@ -38,8 +46,8 @@ public class UserController {
         return userService.update(user);
     }
 
-    @DeleteMapping("/{email}")
-    public void deleteByEmail(@PathVariable @Email(message = "Некорректный формат email") String email) {
-        userService.deleteByEmail(email);
+    @DeleteMapping("/{id}")
+    public void deleteById(@PathVariable Long id) {
+        userService.deleteById(id);
     }
 }

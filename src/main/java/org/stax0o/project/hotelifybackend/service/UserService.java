@@ -23,10 +23,18 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User findByEmail(String string) {
-        Optional<User> optionalUser = userRepository.findByEmail(string);
+    public User findByEmail(String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isEmpty()) {
             throw new IllegalStateException("Пользователя с таким email не существует");
+        }
+        return optionalUser.get();
+    }
+
+    public User findById(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new IllegalStateException("Пользователя с таким id не существует");
         }
         return optionalUser.get();
     }
@@ -53,11 +61,11 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteByEmail(String email) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+    public void deleteById(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
-            throw new IllegalStateException("Пользователя с таким email не существует");
+            throw new IllegalStateException("Пользователя с таким id не существует");
         }
-        userRepository.deleteByEmail(email);
+        userRepository.deleteById(id);
     }
 }
