@@ -2,7 +2,9 @@ package org.stax0o.project.hotelifybackend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.stax0o.project.hotelifybackend.dto.HotelDTO;
 import org.stax0o.project.hotelifybackend.entity.Hotel;
+import org.stax0o.project.hotelifybackend.mapper.HotelMapper;
 import org.stax0o.project.hotelifybackend.repository.HotelRepository;
 
 import java.time.LocalDate;
@@ -13,9 +15,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class HotelService {
     private final HotelRepository hotelRepository;
+    private final HotelMapper hotelMapper;
 
-    public Hotel create(Hotel hotel) {
-        return hotelRepository.save(hotel);
+    public HotelDTO create(HotelDTO hotelDTO) {
+        return hotelMapper.toDTO(hotelRepository.save(hotelMapper.toEntity(hotelDTO)));
     }
 
     public Hotel findById(Long id) {
