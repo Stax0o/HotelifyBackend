@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.stax0o.project.hotelifybackend.dto.HotelDTO;
 import org.stax0o.project.hotelifybackend.entity.Hotel;
 import org.stax0o.project.hotelifybackend.service.HotelService;
 
@@ -17,8 +18,8 @@ public class HotelController {
     private final HotelService hotelService;
 
     @PostMapping
-    public Hotel create(@Valid @RequestBody Hotel hotel) {
-        return hotelService.create(hotel);
+    public HotelDTO create(@Valid @RequestBody HotelDTO hotelDTO) {
+        return hotelService.create(hotelDTO);
     }
 
     @GetMapping("{id}")
