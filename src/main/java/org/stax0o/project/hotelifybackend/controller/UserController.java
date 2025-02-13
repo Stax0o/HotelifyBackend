@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.stax0o.project.hotelifybackend.dto.UserDTO;
 import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.service.UserService;
 
@@ -18,12 +19,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public User create(@Valid @RequestBody User user) {
-        return userService.create(user);
+    public UserDTO create(@Valid @RequestBody UserDTO userDTO) {
+        return userService.create(userDTO);
     }
 
     @GetMapping
-    public User findByIdOrEmail(
+    public UserDTO findByIdOrEmail(
             @RequestParam(required = false) Long id,
             @RequestParam(required = false) @Email(message = "Некорректный формат email") String email) {
 
@@ -37,13 +38,13 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public List<User> findAll() {
+    public List<UserDTO> findAll() {
         return userService.findAll();
     }
 
     @PutMapping
-    public User update(@Valid @RequestBody User user) {
-        return userService.update(user);
+    public UserDTO update(@Valid @RequestBody UserDTO userDTO) {
+        return userService.update(userDTO);
     }
 
     @DeleteMapping("/{id}")

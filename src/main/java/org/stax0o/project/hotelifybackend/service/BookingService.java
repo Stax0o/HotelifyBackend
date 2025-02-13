@@ -28,12 +28,12 @@ public class BookingService {
             throw new IllegalStateException("cost должен быть пустым при создании бронирования");
         }
 
-        Booking booking = bookingMapper.toEntity(bookingDTO);
-
         Optional<Room> optionalRoom = roomRepository.findById(bookingDTO.roomId());
         if (optionalRoom.isEmpty()){
             throw new IllegalArgumentException("Такой комнаты не существует");
         }
+
+        Booking booking = bookingMapper.toEntity(bookingDTO);
 
         double pricePerNight = optionalRoom.get().getPrice();
         int countDays = Period.between(booking.getStartDate(), booking.getEndDate()).getDays();
