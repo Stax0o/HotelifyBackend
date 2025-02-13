@@ -28,6 +28,8 @@ public class BookingService {
             throw new IllegalStateException("cost должен быть пустым при создании бронирования");
         }
 
+
+
         Optional<Room> optionalRoom = roomRepository.findById(bookingDTO.roomId());
         if (optionalRoom.isEmpty()){
             throw new IllegalArgumentException("Такой комнаты не существует");

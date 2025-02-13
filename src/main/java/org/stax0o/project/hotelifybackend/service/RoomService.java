@@ -2,7 +2,11 @@ package org.stax0o.project.hotelifybackend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.stax0o.project.hotelifybackend.dto.RoomDTO;
+import org.stax0o.project.hotelifybackend.entity.Hotel;
 import org.stax0o.project.hotelifybackend.entity.Room;
+import org.stax0o.project.hotelifybackend.mapper.RoomMapper;
+import org.stax0o.project.hotelifybackend.repository.HotelRepository;
 import org.stax0o.project.hotelifybackend.repository.RoomRepository;
 
 import java.time.LocalDate;
@@ -13,34 +17,38 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RoomService {
     private final RoomRepository roomRepository;
+    private final HotelRepository hotelRepository;
+    private final RoomMapper roomMapper;
 
-    public Room create(Room room) {
-        return roomRepository.save(room);
+    public RoomDTO create(RoomDTO roomDTO) {
+        Hotel hotel = hotelRepository.findById(roomDTO.id())
+                .orElseThrow(() -> new IllegalArgumentException("Такого отеля не существует"));
+        Room room = roomMapper.toEntity(roomDTO);
+        room.setHotel(hotel);
+        return roomMapper.toDTO(room);
     }
 
-    public Room findById(Long id) {
-        Optional<Room> optionalRoom = roomRepository.findById(id);
-        if (optionalRoom.isEmpty()) {
-            throw new IllegalStateException("Номера с таким id не существует");
-        }
-        return optionalRoom.get();
+    public RoomDTO findById(Long id) {
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Номера с таким id не существует"));
+        return roomMapper.toDTO(room);
     }
 
-    public List<Room> findByHotelId(Long hotelId) {
-        return roomRepository.findByHotelId(hotelId);
+    public List<RoomDTO> findByHotelId(Long hotelId) {
+        hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new IllegalStateException("Номера с таким id не существует"));
+
+        return roomMapper.toDTOList(roomRepository.findByHotelId(hotelId));
     }
 
-    public Room update(Room newRoom) {
-        Optional<Room> optionalRoom = roomRepository.findById(newRoom.getId());
-        if (optionalRoom.isEmpty()) {
-            throw new IllegalStateException("Такого номера не существует");
-        }
-        Room room = optionalRoom.get();
+    public RoomDTO update(RoomDTO newRoomDTO) {
+        Room room = roomRepository.findById(newRoomDTO.id())
+                .orElseThrow(() -> new IllegalStateException("Такого номера не существует"));
 
-        room.setName(newRoom.getName());
-        room.setPrice(newRoom.getPrice());
+        room.setName(newRoomDTO.name());
+        room.setPrice(newRoomDTO.price());
         room.setUpdatedAt(LocalDate.now());
 
-        return roomRepository.save(room);
+        return roomMapper.toDTO(roomRepository.save(room));
     }
 }

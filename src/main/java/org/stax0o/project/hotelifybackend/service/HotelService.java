@@ -21,33 +21,33 @@ public class HotelService {
         return hotelMapper.toDTO(hotelRepository.save(hotelMapper.toEntity(hotelDTO)));
     }
 
-    public Hotel findById(Long id) {
+    public HotelDTO findById(Long id) {
         Optional<Hotel> optionalHotel = hotelRepository.findById(id);
         if (optionalHotel.isEmpty()) {
             throw new IllegalStateException("Такого отеля не существует");
         }
-        return optionalHotel.get();
+        return hotelMapper.toDTO(optionalHotel.get());
     }
 
-    public List<Hotel> findByUserId(Long id) {
-        return hotelRepository.findByUserId(id);
+    public List<HotelDTO> findByUserId(Long id) {
+        return hotelMapper.toDTOList(hotelRepository.findByUserId(id));
     }
 
-    public Hotel update(Hotel newHotel) {
-        Optional<Hotel> optionalHotel = hotelRepository.findById(newHotel.getId());
+    public HotelDTO update(HotelDTO newHotelDTO) {
+        Optional<Hotel> optionalHotel = hotelRepository.findById(newHotelDTO.id());
         if (optionalHotel.isEmpty()) {
             throw new IllegalStateException("Такого отеля не существует");
         }
         Hotel hotel = optionalHotel.get();
 
-        hotel.setName(newHotel.getName());
-        hotel.setDescription(newHotel.getDescription());
-        hotel.setCity(newHotel.getCity());
-        hotel.setAddress(newHotel.getAddress());
-        hotel.setPhone(newHotel.getPhone());
-        hotel.setEmail(newHotel.getEmail());
+        hotel.setName(newHotelDTO.name());
+        hotel.setDescription(newHotelDTO.description());
+        hotel.setCity(newHotelDTO.city());
+        hotel.setAddress(newHotelDTO.address());
+        hotel.setPhone(newHotelDTO.phone());
+        hotel.setEmail(newHotelDTO.email());
         hotel.setUpdatedAt(LocalDate.now());
 
-        return hotelRepository.save(hotel);
+        return hotelMapper.toDTO(hotelRepository.save(hotel));
     }
 }
