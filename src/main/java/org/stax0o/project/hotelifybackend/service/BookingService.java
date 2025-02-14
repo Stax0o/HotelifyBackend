@@ -2,6 +2,7 @@ package org.stax0o.project.hotelifybackend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.stax0o.project.hotelifybackend.dto.BookingDTO;
 import org.stax0o.project.hotelifybackend.entity.Booking;
 import org.stax0o.project.hotelifybackend.entity.Room;
@@ -12,6 +13,7 @@ import org.stax0o.project.hotelifybackend.repository.BookingRepository;
 import org.stax0o.project.hotelifybackend.repository.RoomRepository;
 import org.stax0o.project.hotelifybackend.repository.UserRepository;
 
+import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
@@ -62,10 +64,28 @@ public class BookingService {
         return bookingMapper.toDTOList(bookingList);
     }
 
+    @Transactional
     public BookingDTO changePaymentStatusToPAID(Long id) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Бронирования с таким id не существует"));
+
+        updateBalance(booking.getUser().getId(), booking.getCost(), true);
+        updateBalance(booking.getRoom().getHotel().getUser().getId(), booking.getCost(), false);
+
         booking.setPaymentStatus(PaymentStatus.PAID);
+
         return bookingMapper.toDTO(bookingRepository.save(booking));
+    }
+
+    private void updateBalance(Long userId, double amount, boolean isSpent){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("Пользователя, который осуществлял бронирование, больше не существует"));
+        double newBalance = isSpent ? user.getBalance() - amount : user.getBalance() + amount;
+        if (newBalance < 0) {
+            throw new IllegalArgumentException("У пользователя недостаточно средств");
+        }
+        user.setBalance(newBalance);
+        user.setUpdatedAt(LocalDate.now());
+        userRepository.save(user);
     }
 }
