@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.stax0o.project.hotelifybackend.dto.HotelDTO;
 import org.stax0o.project.hotelifybackend.entity.Hotel;
+import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.mapper.HotelMapper;
 import org.stax0o.project.hotelifybackend.repository.HotelRepository;
 import org.stax0o.project.hotelifybackend.repository.UserRepository;
@@ -19,7 +20,12 @@ public class HotelService {
     private final UserRepository userRepository;
 
     public HotelDTO create(HotelDTO hotelDTO) {
-        return hotelMapper.toDTO(hotelRepository.save(hotelMapper.toEntity(hotelDTO)));
+        User user = userRepository.findById(hotelDTO.userId())
+                .orElseThrow(() -> new IllegalArgumentException("Такого пользователя не существует"));
+        Hotel hotel = hotelMapper.toEntity(hotelDTO);
+        hotel.setUser(user);
+
+        return hotelMapper.toDTO(hotelRepository.save(hotel));
     }
 
     public HotelDTO findById(Long id) {

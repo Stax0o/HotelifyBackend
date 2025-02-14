@@ -10,7 +10,6 @@ import org.stax0o.project.hotelifybackend.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
