@@ -19,29 +19,20 @@ public class UserService {
     private final UserMapper userMapper;
 
     public UserDTO create(UserDTO userDTO) {
-        Optional<User> optionalUser = userRepository.findByEmail(userDTO.email());
-        if (optionalUser.isPresent()) {
-            throw new IllegalStateException("Пользователь с таким email уже существует");
-        }
-
         User user = userMapper.toEntity(userDTO);
         return userMapper.toDTO(userRepository.save(user));
     }
 
     public UserDTO findByEmail(String email) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (optionalUser.isEmpty()) {
-            throw new IllegalStateException("Пользователя с таким email не существует");
-        }
-        return userMapper.toDTO(optionalUser.get());
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователя с таким email не существует"));
+        return userMapper.toDTO(user);
     }
 
     public UserDTO findById(Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new IllegalStateException("Пользователя с таким id не существует");
-        }
-        return userMapper.toDTO(optionalUser.get());
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователя с таким id не существует"));
+        return userMapper.toDTO(user);
     }
 
     public List<UserDTO> findAll() {
@@ -50,11 +41,8 @@ public class UserService {
 
     @Transactional
     public UserDTO update(UserDTO newUser) {
-        Optional<User> optionalUser = userRepository.findByEmail(newUser.email());
-        if (optionalUser.isEmpty()) {
-            throw new IllegalStateException("Пользователя с таким email не существует");
-        }
-        User user = optionalUser.get();
+        User user = userRepository.findById(newUser.id())
+                .orElseThrow(() -> new IllegalArgumentException("Пользователя с таким id не существует"));
         user.setEmail(newUser.email());
         user.setFirstName(newUser.firstName());
         user.setLastName(newUser.lastName());
@@ -67,10 +55,8 @@ public class UserService {
 
     @Transactional
     public void deleteById(Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new IllegalStateException("Пользователя с таким id не существует");
-        }
+        userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователя с таким id не существует"));
         userRepository.deleteById(id);
     }
 }

@@ -6,39 +6,37 @@ import org.stax0o.project.hotelifybackend.dto.HotelDTO;
 import org.stax0o.project.hotelifybackend.entity.Hotel;
 import org.stax0o.project.hotelifybackend.mapper.HotelMapper;
 import org.stax0o.project.hotelifybackend.repository.HotelRepository;
+import org.stax0o.project.hotelifybackend.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class HotelService {
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
+    private final UserRepository userRepository;
 
     public HotelDTO create(HotelDTO hotelDTO) {
         return hotelMapper.toDTO(hotelRepository.save(hotelMapper.toEntity(hotelDTO)));
     }
 
     public HotelDTO findById(Long id) {
-        Optional<Hotel> optionalHotel = hotelRepository.findById(id);
-        if (optionalHotel.isEmpty()) {
-            throw new IllegalStateException("Такого отеля не существует");
-        }
-        return hotelMapper.toDTO(optionalHotel.get());
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Такого отеля не существует"));
+        return hotelMapper.toDTO(hotel);
     }
 
-    public List<HotelDTO> findByUserId(Long id) {
-        return hotelMapper.toDTOList(hotelRepository.findByUserId(id));
+    public List<HotelDTO> findByUserId(Long userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Такого пользователя не существует"));
+        return hotelMapper.toDTOList(hotelRepository.findByUserId(userId));
     }
 
     public HotelDTO update(HotelDTO newHotelDTO) {
-        Optional<Hotel> optionalHotel = hotelRepository.findById(newHotelDTO.id());
-        if (optionalHotel.isEmpty()) {
-            throw new IllegalStateException("Такого отеля не существует");
-        }
-        Hotel hotel = optionalHotel.get();
+        Hotel hotel = hotelRepository.findById(newHotelDTO.id())
+                .orElseThrow(() -> new IllegalArgumentException("Такого отеля не существует"));
 
         hotel.setName(newHotelDTO.name());
         hotel.setDescription(newHotelDTO.description());
