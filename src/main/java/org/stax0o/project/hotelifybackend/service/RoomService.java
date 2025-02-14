@@ -2,6 +2,7 @@ package org.stax0o.project.hotelifybackend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.stax0o.project.hotelifybackend.dto.RoomDTO;
 import org.stax0o.project.hotelifybackend.entity.Hotel;
 import org.stax0o.project.hotelifybackend.entity.Room;
@@ -40,6 +41,7 @@ public class RoomService {
         return roomMapper.toDTOList(roomRepository.findByHotelId(hotelId));
     }
 
+    @Transactional
     public RoomDTO update(RoomDTO newRoomDTO) {
         Room room = roomRepository.findById(newRoomDTO.id())
                 .orElseThrow(() -> new IllegalStateException("Такого номера не существует"));
