@@ -1,8 +1,6 @@
 package org.stax0o.project.hotelifybackend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.stax0o.project.hotelifybackend.enums.PaymentMethod;
 
@@ -20,14 +18,14 @@ public class BalanceTopup {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @NotNull(message = "Способ оплаты не может быть пустым")
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private PaymentMethod paymentMethod;
 
-    @DecimalMin(value = "1.0")
+    @Column(nullable = false)
     private Double amount;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDate createdAt = LocalDate.now();
 
     @Column(name = "updated_at")

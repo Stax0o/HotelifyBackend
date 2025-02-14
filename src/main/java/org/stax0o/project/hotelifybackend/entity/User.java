@@ -1,10 +1,6 @@
 package org.stax0o.project.hotelifybackend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.stax0o.project.hotelifybackend.enums.UserRole;
 
@@ -18,33 +14,25 @@ public class User {
     @GeneratedValue
     private Long id;
 
-    @NotBlank(message = "Email не должен быть пустым")
-    @Email(message = "Некорректный формат email")
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(name = "first_name")
-    @NotBlank(message = "Имя не должно быть пустым")
-    @Size(min = 2, max = 50, message = "Длина строки должна быть от 2 до 50 символов")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "last_name")
-    @NotBlank(message = "Фамилия не должна быть пустой")
-    @Size(min = 2, max = 50, message = "Длина строки должна быть от 2 до 50 символов")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @NotNull(message = "Роль пользователя не должна быть null")
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserRole userRole;
 
-    @NotBlank(message = "Телефон не должен быть пустым")
-    @Size(min = 5, max = 20, message = "Длина строки должна быть от 5 до 20 символов")
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String phone;
 
     private Double balance = 0.0;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDate createdAt = LocalDate.now();
 
     @Column(name = "updated_at")

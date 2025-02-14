@@ -1,9 +1,6 @@
 package org.stax0o.project.hotelifybackend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.stax0o.project.hotelifybackend.enums.PaymentStatus;
 
@@ -19,32 +16,27 @@ public class Booking {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "room_id")
+    @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
-    @NotNull
-    @FutureOrPresent(message = "Дата должна быть текущая или будущая")
-    @Column(name = "start_date")
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @NotNull
-    @FutureOrPresent(message = "Дата должна быть текущая или будущая")
-    @Column(name = "end_date")
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
-    @NotNull
-    @DecimalMin(value = "1.0", message = "Стоимость должна быть положительной")
+    @Column(nullable = false)
     private Double cost;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "payment_status")
+    @Column(name = "payment_status", nullable = false)
     private PaymentStatus paymentStatus = PaymentStatus.UNPAID;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDate createdAt = LocalDate.now();
 
     @Column(name = "updated_at")

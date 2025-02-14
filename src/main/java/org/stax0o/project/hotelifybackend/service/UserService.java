@@ -3,69 +3,59 @@ package org.stax0o.project.hotelifybackend.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.stax0o.project.hotelifybackend.dto.UserDTO;
 import org.stax0o.project.hotelifybackend.entity.User;
+import org.stax0o.project.hotelifybackend.mapper.UserMapper;
 import org.stax0o.project.hotelifybackend.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public User create(User user) {
-        Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
-        if (optionalUser.isPresent()) {
-            throw new IllegalStateException("Пользователь с таким email уже существует");
-        }
-        return userRepository.save(user);
+    public UserDTO create(UserDTO userDTO) {
+        User user = userMapper.toEntity(userDTO);
+        return userMapper.toDTO(userRepository.save(user));
     }
 
-    public User findByEmail(String email) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (optionalUser.isEmpty()) {
-            throw new IllegalStateException("Пользователя с таким email не существует");
-        }
-        return optionalUser.get();
+    public UserDTO findByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователя с таким email не существует"));
+        return userMapper.toDTO(user);
     }
 
-    public User findById(Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new IllegalStateException("Пользователя с таким id не существует");
-        }
-        return optionalUser.get();
+    public UserDTO findById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователя с таким id не существует"));
+        return userMapper.toDTO(user);
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserDTO> findAll() {
+        return userMapper.toDTOList(userRepository.findAll());
     }
 
     @Transactional
-    public User update(User newUser) {
-        Optional<User> optionalUser = userRepository.findByEmail(newUser.getEmail());
-        if (optionalUser.isEmpty()) {
-            throw new IllegalStateException("Пользователя с таким email не существует");
-        }
-        User user = optionalUser.get();
-        user.setEmail(newUser.getEmail());
-        user.setFirstName(newUser.getFirstName());
-        user.setLastName(newUser.getLastName());
-        user.setPhone(newUser.getPhone());
+    public UserDTO update(UserDTO newUser) {
+        User user = userRepository.findById(newUser.id())
+                .orElseThrow(() -> new IllegalArgumentException("Пользователя с таким id не существует"));
+        user.setEmail(newUser.email());
+        user.setFirstName(newUser.firstName());
+        user.setLastName(newUser.lastName());
+        user.setPhone(newUser.phone());
         user.setUpdatedAt(LocalDate.now());
         userRepository.save(user);
 
-        return user;
+        return userMapper.toDTO(user);
     }
 
     @Transactional
     public void deleteById(Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new IllegalStateException("Пользователя с таким id не существует");
-        }
+        userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователя с таким id не существует"));
         userRepository.deleteById(id);
     }
 }

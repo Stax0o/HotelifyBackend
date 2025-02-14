@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.stax0o.project.hotelifybackend.entity.BalanceTopup;
+import org.stax0o.project.hotelifybackend.dto.BalanceTopupDTO;
 import org.stax0o.project.hotelifybackend.service.BalanceTopupService;
 
 import java.util.List;
@@ -17,12 +17,12 @@ public class BalanceTopupController {
     private final BalanceTopupService topupService;
 
     @PostMapping
-    public BalanceTopup create(@Valid @RequestBody BalanceTopup topup) {
-        return topupService.create(topup);
+    public BalanceTopupDTO create(@Valid @RequestBody BalanceTopupDTO topupDTO) {
+        return topupService.create(topupDTO);
     }
 
     @GetMapping
-    public List<BalanceTopup> findAllTopUps(@RequestParam Long userId) {
+    public List<BalanceTopupDTO> findAllTopUps(@RequestParam Long userId) {
         return topupService.findAllTopUpsByUserId(userId);
     }
 }

@@ -4,50 +4,54 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.stax0o.project.hotelifybackend.dto.HotelDTO;
 import org.stax0o.project.hotelifybackend.entity.Hotel;
+import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.mapper.HotelMapper;
 import org.stax0o.project.hotelifybackend.repository.HotelRepository;
+import org.stax0o.project.hotelifybackend.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class HotelService {
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
+    private final UserRepository userRepository;
 
     public HotelDTO create(HotelDTO hotelDTO) {
-        return hotelMapper.toDTO(hotelRepository.save(hotelMapper.toEntity(hotelDTO)));
+        User user = userRepository.findById(hotelDTO.userId())
+                .orElseThrow(() -> new IllegalArgumentException("Такого пользователя не существует"));
+        Hotel hotel = hotelMapper.toEntity(hotelDTO);
+        hotel.setUser(user);
+
+        return hotelMapper.toDTO(hotelRepository.save(hotel));
     }
 
-    public Hotel findById(Long id) {
-        Optional<Hotel> optionalHotel = hotelRepository.findById(id);
-        if (optionalHotel.isEmpty()) {
-            throw new IllegalStateException("Такого отеля не существует");
-        }
-        return optionalHotel.get();
+    public HotelDTO findById(Long id) {
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Такого отеля не существует"));
+        return hotelMapper.toDTO(hotel);
     }
 
-    public List<Hotel> findByUserId(Long id) {
-        return hotelRepository.findByUserId(id);
+    public List<HotelDTO> findByUserId(Long userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Такого пользователя не существует"));
+        return hotelMapper.toDTOList(hotelRepository.findByUserId(userId));
     }
 
-    public Hotel update(Hotel newHotel) {
-        Optional<Hotel> optionalHotel = hotelRepository.findById(newHotel.getId());
-        if (optionalHotel.isEmpty()) {
-            throw new IllegalStateException("Такого отеля не существует");
-        }
-        Hotel hotel = optionalHotel.get();
+    public HotelDTO update(HotelDTO newHotelDTO) {
+        Hotel hotel = hotelRepository.findById(newHotelDTO.id())
+                .orElseThrow(() -> new IllegalArgumentException("Такого отеля не существует"));
 
-        hotel.setName(newHotel.getName());
-        hotel.setDescription(newHotel.getDescription());
-        hotel.setCity(newHotel.getCity());
-        hotel.setAddress(newHotel.getAddress());
-        hotel.setPhone(newHotel.getPhone());
-        hotel.setEmail(newHotel.getEmail());
+        hotel.setName(newHotelDTO.name());
+        hotel.setDescription(newHotelDTO.description());
+        hotel.setCity(newHotelDTO.city());
+        hotel.setAddress(newHotelDTO.address());
+        hotel.setPhone(newHotelDTO.phone());
+        hotel.setEmail(newHotelDTO.email());
         hotel.setUpdatedAt(LocalDate.now());
 
-        return hotelRepository.save(hotel);
+        return hotelMapper.toDTO(hotelRepository.save(hotel));
     }
 }
