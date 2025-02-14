@@ -11,7 +11,6 @@ import org.stax0o.project.hotelifybackend.repository.RoomRepository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,11 +20,11 @@ public class RoomService {
     private final RoomMapper roomMapper;
 
     public RoomDTO create(RoomDTO roomDTO) {
-        Hotel hotel = hotelRepository.findById(roomDTO.id())
+        Hotel hotel = hotelRepository.findById(roomDTO.hotelId())
                 .orElseThrow(() -> new IllegalArgumentException("Такого отеля не существует"));
         Room room = roomMapper.toEntity(roomDTO);
         room.setHotel(hotel);
-        return roomMapper.toDTO(room);
+        return roomMapper.toDTO(roomRepository.save(room));
     }
 
     public RoomDTO findById(Long id) {
@@ -36,7 +35,7 @@ public class RoomService {
 
     public List<RoomDTO> findByHotelId(Long hotelId) {
         hotelRepository.findById(hotelId)
-                .orElseThrow(() -> new IllegalStateException("Номера с таким id не существует"));
+                .orElseThrow(() -> new IllegalStateException("Отеля с таким id не существует"));
 
         return roomMapper.toDTOList(roomRepository.findByHotelId(hotelId));
     }

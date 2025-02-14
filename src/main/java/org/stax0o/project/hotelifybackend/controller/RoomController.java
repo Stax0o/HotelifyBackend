@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.stax0o.project.hotelifybackend.dto.RoomDTO;
-import org.stax0o.project.hotelifybackend.entity.Room;
 import org.stax0o.project.hotelifybackend.service.RoomService;
 
 import java.util.List;

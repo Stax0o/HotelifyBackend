@@ -10,8 +10,10 @@ import java.time.LocalDate;
 public record BookingDTO(
         Long id,
 
+        @NotNull(message = "id пользователя не должен быть пустым")
         Long userId,
 
+        @NotNull(message = "id комнаты не должен быть пустым")
         Long roomId,
 
         @NotNull
@@ -22,8 +24,6 @@ public record BookingDTO(
         @FutureOrPresent(message = "Дата должна быть текущая или будущая")
         LocalDate endDate,
 
-        @NotNull
-        @DecimalMin(value = "1.0", message = "Стоимость должна быть положительной")
         Double cost,
 
         PaymentStatus paymentStatus) {
