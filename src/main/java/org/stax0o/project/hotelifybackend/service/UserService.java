@@ -1,10 +1,13 @@
 package org.stax0o.project.hotelifybackend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.stax0o.project.hotelifybackend.dto.SignUpDTO;
 import org.stax0o.project.hotelifybackend.dto.UserDTO;
 import org.stax0o.project.hotelifybackend.entity.User;
+import org.stax0o.project.hotelifybackend.mapper.SignUpMapper;
 import org.stax0o.project.hotelifybackend.mapper.UserMapper;
 import org.stax0o.project.hotelifybackend.repository.UserRepository;
 
@@ -16,9 +19,12 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final SignUpMapper signUpMapper;
 
-    public UserDTO create(UserDTO userDTO) {
-        User user = userMapper.toEntity(userDTO);
+    public UserDTO create(User user) {
+        if (userRepository.existsByEmail(user.getEmail())){
+            throw new IllegalArgumentException("Email занят");
+        }
         return userMapper.toDTO(userRepository.save(user));
     }
 
@@ -26,6 +32,11 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Пользователя с таким email не существует"));
         return userMapper.toDTO(user);
+    }
+
+    public UserDetailsService userDetailsService() {
+        return email -> userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь с email " + email + " не найден"));
     }
 
     public UserDTO findById(Long id) {
