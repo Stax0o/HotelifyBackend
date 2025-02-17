@@ -3,10 +3,14 @@ package org.stax0o.project.hotelifybackend.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.stax0o.project.hotelifybackend.dto.UserDTO;
 import org.stax0o.project.hotelifybackend.entity.User;
+import org.stax0o.project.hotelifybackend.mapper.UserMapper;
 import org.stax0o.project.hotelifybackend.service.UserService;
 
 import java.util.List;
@@ -17,12 +21,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final UserMapper userMapper;
 
-//    todo
-//    @PostMapping
-//    public UserDTO create(@Valid @RequestBody UserDTO userDTO) {
-//        return userService.create(userDTO);
-//    }
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(userMapper.toDTO(user));
+    }
 
     @GetMapping
     public UserDTO findByIdOrEmail(
@@ -44,12 +48,14 @@ public class UserController {
     }
 
     @PutMapping
+    @PreAuthorize("#userDTO.id() == authentication.principal.id")
     public UserDTO update(@Valid @RequestBody UserDTO userDTO) {
         return userService.update(userDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id) {
-        userService.deleteById(id);
-    }
+//todo
+//    @DeleteMapping("/{id}")
+//    public void deleteById(@PathVariable Long id) {
+//        userService.deleteById(id);
+//    }
 }

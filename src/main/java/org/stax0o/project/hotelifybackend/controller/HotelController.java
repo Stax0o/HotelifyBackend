@@ -26,6 +26,11 @@ public class HotelController {
         return hotelService.findById(id);
     }
 
+    @GetMapping("/all")
+    public List<HotelDTO> findAll(){
+        return hotelService.findAll();
+    }
+
     @GetMapping
     public List<HotelDTO> findByUserId(@RequestParam Long userId) {
         return hotelService.findByUserId(userId);
