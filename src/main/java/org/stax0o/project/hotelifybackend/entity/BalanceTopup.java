@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Table(name = "balance_topup")
 public class BalanceTopup {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
