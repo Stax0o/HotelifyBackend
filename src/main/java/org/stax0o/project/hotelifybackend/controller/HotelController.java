@@ -2,6 +2,7 @@ package org.stax0o.project.hotelifybackend.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.stax0o.project.hotelifybackend.dto.HotelDTO;
@@ -17,6 +18,7 @@ public class HotelController {
     private final HotelService hotelService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('OWNER')")
     public HotelDTO create(@Valid @RequestBody HotelDTO hotelDTO) {
         return hotelService.create(hotelDTO);
     }
