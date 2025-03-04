@@ -28,9 +28,7 @@ public class BookingService {
     private final BookingMapper bookingMapper;
 
     public BookingDTO create(Booking booking, User user) {
-        if (booking.getPaymentStatus() != null) {
-            throw new IllegalStateException("paymentStatus должен быть пустым при создании бронирования");
-        } else if (booking.getCost() != null) {
+        if (booking.getCost() != null) {
             throw new IllegalStateException("cost должен быть пустым при создании бронирования");
         }
 
@@ -51,6 +49,10 @@ public class BookingService {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Бронирования с таким id не существует"));
         return bookingMapper.toDTO(booking);
+    }
+
+    public List<Booking> getByUserId(Long id) {
+        return bookingRepository.findByUserId(id);
     }
 
     public List<BookingDTO> findByUserId(Long id) {

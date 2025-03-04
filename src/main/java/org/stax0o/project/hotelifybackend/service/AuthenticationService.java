@@ -6,8 +6,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.stax0o.project.hotelifybackend.dto.JwtAuthenticationDTO;
-import org.stax0o.project.hotelifybackend.dto.SignInDTO;
-import org.stax0o.project.hotelifybackend.dto.SignUpDTO;
+import org.stax0o.project.hotelifybackend.dto.LoginDTO;
+import org.stax0o.project.hotelifybackend.dto.RegisterDTO;
 import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.mapper.SignUpMapper;
 
@@ -20,7 +20,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final SignUpMapper signUpMapper;
 
-    public JwtAuthenticationDTO signUp(SignUpDTO request) {
+    public JwtAuthenticationDTO signUp(RegisterDTO request) {
         User user = signUpMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.create(user);
@@ -28,7 +28,7 @@ public class AuthenticationService {
         return new JwtAuthenticationDTO(jwt);
     }
 
-    public JwtAuthenticationDTO signIn(SignInDTO request) {
+    public JwtAuthenticationDTO signIn(LoginDTO request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.email(),
                 request.password()

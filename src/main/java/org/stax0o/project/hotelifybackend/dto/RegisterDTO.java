@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.stax0o.project.hotelifybackend.enums.UserRole;
 
-public record SignUpDTO(
+public record RegisterDTO(
         @NotBlank(message = "Email не должен быть пустым")
         @Email(message = "Некорректный формат email")
         String email,

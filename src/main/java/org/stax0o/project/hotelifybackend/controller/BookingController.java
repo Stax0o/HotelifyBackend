@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.stax0o.project.hotelifybackend.dto.BookingDTO;
+import org.stax0o.project.hotelifybackend.entity.Booking;
 import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.enums.UserRole;
 import org.stax0o.project.hotelifybackend.mapper.BookingMapper;
@@ -27,12 +28,18 @@ public class BookingController {
         return bookingService.create(bookingMapper.toEntity(bookingDTO), user);
     }
 
+    @GetMapping("/my")
+    public List<Booking> getBookingsCurrentUser(@AuthenticationPrincipal User user){
+        return bookingService.getByUserId(user.getId());
+    }
+
     @GetMapping("{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public BookingDTO findById(@PathVariable Long id) {
         return bookingService.findById(id);
     }
 
+//    todo что-то странное с ролями, надо разобраться
     @GetMapping()
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public List<BookingDTO> findByUserIdOrRoomId(@RequestParam(required = false) Long userId,
