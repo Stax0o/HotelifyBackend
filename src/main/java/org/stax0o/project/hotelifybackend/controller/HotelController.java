@@ -49,14 +49,14 @@ public class HotelController {
         return hotelService.findAll();
     }
 
-    @GetMapping
-    public List<HotelDTO> findByUserId(@RequestParam Long userId) {
-        return hotelService.findByUserId(userId);
-    }
-
-    @PutMapping
-    public HotelDTO update(@Valid @RequestBody HotelDTO hotelDTO) {
-        return hotelService.update(hotelDTO);
-    }
+//    @GetMapping
+//    public List<HotelDTO> findByUserId(@RequestParam Long userId) {
+//        return hotelService.findByUserId(userId);
+//    }
+//
+//    @PutMapping
+//    public HotelDTO update(@Valid @RequestBody HotelDTO hotelDTO) {
+//        return hotelService.update(hotelDTO);
+//    }
 }
 

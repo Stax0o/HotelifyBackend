@@ -31,8 +31,8 @@ public class RoomController {
         return roomService.findByHotelId(hotelId);
     }
 
-    @PutMapping
-    public RoomDTO update(@Valid @RequestBody RoomDTO roomDTO) {
-        return roomService.update(roomDTO);
-    }
+//    @PutMapping
+//    public RoomDTO update(@Valid @RequestBody RoomDTO roomDTO) {
+//        return roomService.update(roomDTO);
+//    }
 }
