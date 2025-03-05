@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.stax0o.project.hotelifybackend.dto.RoomDTO;
+import org.stax0o.project.hotelifybackend.dto.RoomTypeDTO;
 import org.stax0o.project.hotelifybackend.service.RoomService;
 
 import java.time.LocalDate;
@@ -33,9 +34,9 @@ public class RoomController {
     }
 
     @GetMapping("/available-types")
-    public List<String> getAvailableRoomTypes(@RequestParam Long hotelId,
-                                              @RequestParam LocalDate startDate,
-                                              @RequestParam LocalDate endDate) {
+    public List<RoomTypeDTO> getAvailableRoomTypes(@RequestParam Long hotelId,
+                                                   @RequestParam LocalDate startDate,
+                                                   @RequestParam LocalDate endDate) {
         return roomService.getAvailableRoomTypes(hotelId, startDate, endDate);
     }
 

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.stax0o.project.hotelifybackend.dto.RoomDTO;
+import org.stax0o.project.hotelifybackend.dto.RoomTypeDTO;
 import org.stax0o.project.hotelifybackend.entity.Hotel;
 import org.stax0o.project.hotelifybackend.entity.Room;
 import org.stax0o.project.hotelifybackend.mapper.RoomMapper;
@@ -44,15 +45,14 @@ public class RoomService {
         return roomMapper.toDTOList(roomRepository.findByHotelId(hotelId));
     }
 
-    public List<String> getAvailableRoomTypes(Long hotelId,
+    public List<RoomTypeDTO> getAvailableRoomTypes(Long hotelId,
                                               LocalDate startDate,
                                               LocalDate endDate) {
         List<Room> rooms = roomRepository.findAvailableRooms(hotelId, startDate, endDate);
         return rooms.stream()
-                .map(Room::getName)
-                .collect(Collectors.toSet())
-                .stream()
-                .toList();
+                .map(room -> new RoomTypeDTO(room.getId(), room.getName()))
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     @Transactional
