@@ -3,6 +3,7 @@ package org.stax0o.project.hotelifybackend.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.stax0o.project.hotelifybackend.dto.HotelDTO;
 import org.stax0o.project.hotelifybackend.entity.Hotel;
 import org.stax0o.project.hotelifybackend.entity.User;
@@ -10,6 +11,7 @@ import org.stax0o.project.hotelifybackend.mapper.HotelMapper;
 import org.stax0o.project.hotelifybackend.repository.HotelRepository;
 import org.stax0o.project.hotelifybackend.repository.UserRepository;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -19,12 +21,19 @@ public class HotelService {
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
     private final UserRepository userRepository;
+    private final SaveImageService saveImageService;
 
-    public HotelDTO create(HotelDTO hotelDTO) {
+    @Transactional
+    public HotelDTO create(HotelDTO hotelDTO, List<MultipartFile> images) {
         User user = userRepository.findById(hotelDTO.userId())
                 .orElseThrow(() -> new IllegalArgumentException("Такого пользователя не существует"));
         Hotel hotel = hotelMapper.toEntity(hotelDTO);
         hotel.setUser(user);
+        try {
+            hotel.setImages(saveImageService.saveImage(images, hotel));
+        } catch (IOException e) {
+            throw new IllegalStateException("Ошибка сохранения изображений");
+        }
 
         return hotelMapper.toDTO(hotelRepository.save(hotel));
     }
