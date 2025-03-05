@@ -56,4 +56,8 @@ public class HotelService {
 
         return hotelMapper.toDTO(hotelRepository.save(hotel));
     }
+
+    public List<HotelDTO> findAll(){
+        return hotelMapper.toDTOList(hotelRepository.findAll());
+    }
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.stax0o.project.hotelifybackend.dto.BookingDTO;
 import org.stax0o.project.hotelifybackend.entity.Booking;
+import org.stax0o.project.hotelifybackend.entity.Hotel;
 import org.stax0o.project.hotelifybackend.entity.Room;
 import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.enums.PaymentStatus;
@@ -16,6 +17,7 @@ import org.stax0o.project.hotelifybackend.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -25,19 +27,14 @@ public class BookingService {
     private final UserRepository userRepository;
     private final BookingMapper bookingMapper;
 
-    public BookingDTO create(BookingDTO bookingDTO) {
-        if (bookingDTO.paymentStatus() != null) {
-            throw new IllegalStateException("paymentStatus должен быть пустым при создании бронирования");
-        } else if (bookingDTO.cost() != null) {
+    public BookingDTO create(Booking booking, User user) {
+        if (booking.getCost() != null) {
             throw new IllegalStateException("cost должен быть пустым при создании бронирования");
         }
 
-        User user = userRepository.findById(bookingDTO.userId())
-                .orElseThrow(() -> new IllegalArgumentException("Такого пользователя не существует"));
-        Room room = roomRepository.findById(bookingDTO.roomId())
+        Room room = roomRepository.findById(booking.getRoom().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Такой комнаты не существует"));
 
-        Booking booking = bookingMapper.toEntity(bookingDTO);
         booking.setUser(user);
         booking.setRoom(room);
 
@@ -54,21 +51,33 @@ public class BookingService {
         return bookingMapper.toDTO(booking);
     }
 
+    public List<Booking> getByUserId(Long id) {
+        return bookingRepository.findByUserId(id);
+    }
+
     public List<BookingDTO> findByUserId(Long id) {
         List<Booking> bookingList = bookingRepository.findByUserId(id);
         return bookingMapper.toDTOList(bookingList);
     }
 
-    public List<BookingDTO> findByRoomId(Long id) {
+    public List<BookingDTO> findByRoomId(Long id, User user) {
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Такой комнаты не существует"));
+        Hotel hotel = room.getHotel();
+        if (!Objects.equals(hotel.getId(), user.getId())){
+            throw new IllegalArgumentException("Комната не принадлежит данному пользователю");
+        }
         List<Booking> bookingList = bookingRepository.findByRoomId(id);
         return bookingMapper.toDTOList(bookingList);
     }
 
     @Transactional
-    public BookingDTO changePaymentStatusToPAID(Long id) {
+    public BookingDTO changePaymentStatusToPAID(Long id, User user) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Бронирования с таким id не существует"));
-
+        if (!booking.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("Нет прав на изменение статуса оплаты другого пользователя");
+        }
         updateBalance(booking.getUser().getId(), booking.getCost(), true);
         updateBalance(booking.getRoom().getHotel().getUser().getId(), booking.getCost(), false);
 
@@ -77,7 +86,7 @@ public class BookingService {
         return bookingMapper.toDTO(bookingRepository.save(booking));
     }
 
-    private void updateBalance(Long userId, double amount, boolean isSpent){
+    private void updateBalance(Long userId, double amount, boolean isSpent) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("Пользователя, который осуществлял бронирование, больше не существует"));
         double newBalance = isSpent ? user.getBalance() - amount : user.getBalance() + amount;
