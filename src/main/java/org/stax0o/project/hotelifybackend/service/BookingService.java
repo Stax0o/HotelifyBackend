@@ -10,9 +10,11 @@ import org.stax0o.project.hotelifybackend.entity.Room;
 import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.enums.PaymentStatus;
 import org.stax0o.project.hotelifybackend.mapper.BookingMapper;
+import org.stax0o.project.hotelifybackend.mapper.BookingResponseMapper;
 import org.stax0o.project.hotelifybackend.repository.BookingRepository;
 import org.stax0o.project.hotelifybackend.repository.RoomRepository;
 import org.stax0o.project.hotelifybackend.repository.UserRepository;
+import org.stax0o.project.hotelifybackend.response.BookingResponse;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -26,6 +28,7 @@ public class BookingService {
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
     private final BookingMapper bookingMapper;
+    private final BookingResponseMapper bookingResponseMapper;
 
     public BookingDTO create(Booking booking, User user) {
         if (booking.getCost() != null) {
@@ -55,12 +58,12 @@ public class BookingService {
 //        return bookingRepository.findByUserId(id);
 //    }
 
-    public List<BookingDTO> findByUserId(Long id) {
+    public List<BookingResponse> findByUserId(Long id) {
         List<Booking> bookingList = bookingRepository.findByUserId(id);
-        return bookingMapper.toDTOList(bookingList);
+        return bookingResponseMapper.toDTOList(bookingList);
     }
 
-    public List<BookingDTO> findByRoomId(Long id, User user) {
+    public List<BookingResponse> findByRoomId(Long id, User user) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Такой комнаты не существует"));
         Hotel hotel = room.getHotel();
@@ -68,7 +71,7 @@ public class BookingService {
             throw new IllegalArgumentException("Комната не принадлежит данному пользователю");
         }
         List<Booking> bookingList = bookingRepository.findByRoomId(id);
-        return bookingMapper.toDTOList(bookingList);
+        return bookingResponseMapper.toDTOList(bookingList);
     }
 
     @Transactional

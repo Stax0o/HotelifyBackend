@@ -11,6 +11,7 @@ import org.stax0o.project.hotelifybackend.entity.Booking;
 import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.enums.UserRole;
 import org.stax0o.project.hotelifybackend.mapper.BookingMapper;
+import org.stax0o.project.hotelifybackend.response.BookingResponse;
 import org.stax0o.project.hotelifybackend.service.BookingService;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class BookingController {
     }
 
     @GetMapping("/my")
-    public List<BookingDTO> getBookingsCurrentUser(@AuthenticationPrincipal User user){
+    public List<BookingResponse> getBookingsCurrentUser(@AuthenticationPrincipal User user){
         return bookingService.findByUserId(user.getId());
     }
 
@@ -42,9 +43,9 @@ public class BookingController {
 //    todo что-то странное с ролями, надо разобраться
     @GetMapping()
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public List<BookingDTO> findByUserIdOrRoomId(@RequestParam(required = false) Long userId,
-                                                 @RequestParam(required = false) Long roomId,
-                                                 @AuthenticationPrincipal User user) {
+    public List<BookingResponse> findByUserIdOrRoomId(@RequestParam(required = false) Long userId,
+                                                      @RequestParam(required = false) Long roomId,
+                                                      @AuthenticationPrincipal User user) {
         if (userId != null && user.getUserRole() == UserRole.ADMIN) {
             return bookingService.findByUserId(userId);
         } else if (roomId != null && user.getUserRole() == UserRole.OWNER) {
