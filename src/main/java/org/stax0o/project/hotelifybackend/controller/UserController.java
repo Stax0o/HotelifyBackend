@@ -28,32 +28,32 @@ public class UserController {
         return ResponseEntity.ok(userMapper.toDTO(user));
     }
 
-    @GetMapping
-    public UserDTO findByIdOrEmail(
-            @RequestParam(required = false) Long id,
-            @RequestParam(required = false) @Email(message = "Некорректный формат email") String email) {
+//    @GetMapping
+//    public UserDTO findByIdOrEmail(
+//            @RequestParam(required = false) Long id,
+//            @RequestParam(required = false) @Email(message = "Некорректный формат email") String email) {
+//
+//        if (id != null) {
+//            return userService.findById(id);
+//        } else if (email != null) {
+//            return userService.findByEmail(email);
+//        } else {
+//            throw new IllegalArgumentException("Необходимо передать email или id");
+//        }
+//    }
 
-        if (id != null) {
-            return userService.findById(id);
-        } else if (email != null) {
-            return userService.findByEmail(email);
-        } else {
-            throw new IllegalArgumentException("Необходимо передать email или id");
-        }
-    }
+//    @GetMapping("/all")
+//    public List<UserDTO> findAll() {
+//        return userService.findAll();
+//    }
+//
+//    @PutMapping
+//    @PreAuthorize("#userDTO.id() == authentication.principal.id")
+//    public UserDTO update(@Valid @RequestBody UserDTO userDTO) {
+//        return userService.update(userDTO);
+//    }
 
-    @GetMapping("/all")
-    public List<UserDTO> findAll() {
-        return userService.findAll();
-    }
-
-    @PutMapping
-    @PreAuthorize("#userDTO.id() == authentication.principal.id")
-    public UserDTO update(@Valid @RequestBody UserDTO userDTO) {
-        return userService.update(userDTO);
-    }
-
-//todo
+//todo реализовать удаление
 //    @DeleteMapping("/{id}")
 //    public void deleteById(@PathVariable Long id) {
 //        userService.deleteById(id);

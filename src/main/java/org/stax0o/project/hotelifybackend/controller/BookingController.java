@@ -11,6 +11,7 @@ import org.stax0o.project.hotelifybackend.entity.Booking;
 import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.enums.UserRole;
 import org.stax0o.project.hotelifybackend.mapper.BookingMapper;
+import org.stax0o.project.hotelifybackend.response.BookingResponse;
 import org.stax0o.project.hotelifybackend.service.BookingService;
 
 import java.util.List;
@@ -29,33 +30,33 @@ public class BookingController {
     }
 
     @GetMapping("/my")
-    public List<Booking> getBookingsCurrentUser(@AuthenticationPrincipal User user){
-        return bookingService.getByUserId(user.getId());
+    public List<BookingResponse> getBookingsCurrentUser(@AuthenticationPrincipal User user){
+        return bookingService.findByUserId(user.getId());
     }
 
-    @GetMapping("{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public BookingDTO findById(@PathVariable Long id) {
-        return bookingService.findById(id);
-    }
+//    @GetMapping("{id}")
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public BookingDTO findById(@PathVariable Long id) {
+//        return bookingService.findById(id);
+//    }
 
-//    todo что-то странное с ролями, надо разобраться
-    @GetMapping()
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public List<BookingDTO> findByUserIdOrRoomId(@RequestParam(required = false) Long userId,
-                                                 @RequestParam(required = false) Long roomId,
-                                                 @AuthenticationPrincipal User user) {
-        if (userId != null && user.getUserRole() == UserRole.ADMIN) {
-            return bookingService.findByUserId(userId);
-        } else if (roomId != null && user.getUserRole() == UserRole.OWNER) {
-            return bookingService.findByRoomId(roomId, user);
-        } else {
-            throw new IllegalArgumentException("Необходимо ввести id пользователя или комнаты");
-        }
-    }
-
-    @PutMapping("{id}")
-    public BookingDTO changePaymentStatusToPAID(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        return bookingService.changePaymentStatusToPAID(id, user);
-    }
+////    todo что-то странное с ролями, надо разобраться
+//    @GetMapping()
+//    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+//    public List<BookingResponse> findByUserIdOrRoomId(@RequestParam(required = false) Long userId,
+//                                                      @RequestParam(required = false) Long roomId,
+//                                                      @AuthenticationPrincipal User user) {
+//        if (userId != null && user.getUserRole() == UserRole.ADMIN) {
+//            return bookingService.findByUserId(userId);
+//        } else if (roomId != null && user.getUserRole() == UserRole.OWNER) {
+//            return bookingService.findByRoomId(roomId, user);
+//        } else {
+//            throw new IllegalArgumentException("Необходимо ввести id пользователя или комнаты");
+//        }
+//    }
+//
+//    @PutMapping("{id}")
+//    public BookingDTO changePaymentStatusToPAID(@PathVariable Long id, @AuthenticationPrincipal User user) {
+//        return bookingService.changePaymentStatusToPAID(id, user);
+//    }
 }

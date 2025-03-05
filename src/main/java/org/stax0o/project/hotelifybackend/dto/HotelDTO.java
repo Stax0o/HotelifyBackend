@@ -1,15 +1,16 @@
 package org.stax0o.project.hotelifybackend.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+
+import java.util.List;
 
 public record HotelDTO(
         Long id,
 
         @NotNull(message = "id пользователя не должен быть пустым")
         Long userId,
+
+        List<String> imagePaths,
 
         @NotBlank(message = "Название не должно быть пустым")
         String name,
