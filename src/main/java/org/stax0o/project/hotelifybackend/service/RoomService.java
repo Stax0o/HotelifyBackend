@@ -46,13 +46,13 @@ public class RoomService {
     }
 
     public List<RoomTypeDTO> getAvailableRoomTypes(Long hotelId,
-                                              LocalDate startDate,
-                                              LocalDate endDate) {
-        List<Room> rooms = roomRepository.findAvailableRooms(hotelId, startDate, endDate);
+                                                   LocalDate startDate,
+                                                   LocalDate endDate) {
+        List<Room> rooms = roomRepository.findAvailableRooms(hotelId, startDate, endDate, LocalDate.now());
         return rooms.stream()
                 .map(room -> new RoomTypeDTO(room.getId(), room.getName()))
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional

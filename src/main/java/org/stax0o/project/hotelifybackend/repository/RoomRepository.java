@@ -3,7 +3,6 @@ package org.stax0o.project.hotelifybackend.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.stax0o.project.hotelifybackend.entity.Booking;
 import org.stax0o.project.hotelifybackend.entity.Room;
 
 import java.time.LocalDate;
@@ -20,10 +19,17 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             "   AND (" +
             "       (b.startDate <= :endDate AND b.endDate >= :startDate)" +
             "   )" +
+            ") " +
+            "OR EXISTS (" +
+            "   SELECT b FROM Booking b " +
+            "   WHERE b.room = r " +
+            "   AND b.paymentStatus = 'UNPAID' " +
+            "   AND b.startDate < :today" +
             ")")
     List<Room> findAvailableRooms(
             @Param("hotelId") Long hotelId,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            @Param("today") LocalDate today
     );
 }
