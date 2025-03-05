@@ -51,9 +51,9 @@ public class BookingService {
         return bookingMapper.toDTO(booking);
     }
 
-    public List<Booking> getByUserId(Long id) {
-        return bookingRepository.findByUserId(id);
-    }
+//    public List<Booking> getByUserId(Long id) {
+//        return bookingRepository.findByUserId(id);
+//    }
 
     public List<BookingDTO> findByUserId(Long id) {
         List<Booking> bookingList = bookingRepository.findByUserId(id);

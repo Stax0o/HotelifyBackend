@@ -29,8 +29,8 @@ public class BookingController {
     }
 
     @GetMapping("/my")
-    public List<Booking> getBookingsCurrentUser(@AuthenticationPrincipal User user){
-        return bookingService.getByUserId(user.getId());
+    public List<BookingDTO> getBookingsCurrentUser(@AuthenticationPrincipal User user){
+        return bookingService.findByUserId(user.getId());
     }
 
     @GetMapping("{id}")

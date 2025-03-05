@@ -53,7 +53,7 @@ public class UserController {
         return userService.update(userDTO);
     }
 
-//todo
+//todo реализовать удаление
 //    @DeleteMapping("/{id}")
 //    public void deleteById(@PathVariable Long id) {
 //        userService.deleteById(id);
