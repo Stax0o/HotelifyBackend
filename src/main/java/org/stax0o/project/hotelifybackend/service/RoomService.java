@@ -3,6 +3,8 @@ package org.stax0o.project.hotelifybackend.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.stax0o.project.hotelifybackend.dto.RoomDTO;
 import org.stax0o.project.hotelifybackend.entity.Hotel;
 import org.stax0o.project.hotelifybackend.entity.Room;
@@ -12,6 +14,7 @@ import org.stax0o.project.hotelifybackend.repository.RoomRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +42,17 @@ public class RoomService {
                 .orElseThrow(() -> new IllegalStateException("Отеля с таким id не существует"));
 
         return roomMapper.toDTOList(roomRepository.findByHotelId(hotelId));
+    }
+
+    public List<String> getAvailableRoomTypes(Long hotelId,
+                                              LocalDate startDate,
+                                              LocalDate endDate) {
+        List<Room> rooms = roomRepository.findAvailableRooms(hotelId, startDate, endDate);
+        return rooms.stream()
+                .map(Room::getName)
+                .collect(Collectors.toSet())
+                .stream()
+                .toList();
     }
 
     @Transactional

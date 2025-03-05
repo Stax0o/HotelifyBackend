@@ -7,6 +7,7 @@ import java.util.List;
 public record HotelDTO(
         Long id,
 
+//        todo убрать поле userId из HotelDTO
         @NotNull(message = "id пользователя не должен быть пустым")
         Long userId,
 

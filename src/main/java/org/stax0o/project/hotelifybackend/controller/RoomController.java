@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.stax0o.project.hotelifybackend.dto.RoomDTO;
 import org.stax0o.project.hotelifybackend.service.RoomService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -29,6 +30,13 @@ public class RoomController {
     @GetMapping
     public List<RoomDTO> findByHotelId(@RequestParam Long hotelId) {
         return roomService.findByHotelId(hotelId);
+    }
+
+    @GetMapping("/available-types")
+    public List<String> getAvailableRoomTypes(@RequestParam Long hotelId,
+                                              @RequestParam LocalDate startDate,
+                                              @RequestParam LocalDate endDate) {
+        return roomService.getAvailableRoomTypes(hotelId, startDate, endDate);
     }
 
 //    @PutMapping
