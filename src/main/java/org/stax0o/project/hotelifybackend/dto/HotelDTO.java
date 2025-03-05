@@ -10,7 +10,6 @@ public record HotelDTO(
         @NotNull(message = "id пользователя не должен быть пустым")
         Long userId,
 
-        //@NotEmpty
         List<String> imagePaths,
 
         @NotBlank(message = "Название не должно быть пустым")

@@ -48,6 +48,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/user/me").authenticated()
                         .requestMatchers("/api/user/**").hasRole("ADMIN")
                         .requestMatchers("api/hotel/all").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())

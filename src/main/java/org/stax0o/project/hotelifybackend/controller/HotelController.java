@@ -36,13 +36,8 @@ public class HotelController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный формат JSON", e);
         }
 
-//        validateHotelDTO(hotelDTO);
-
         return hotelService.create(hotelDTO, images);
     }
-
-//    private void validateHotelDTO(@Valid HotelDTO hotelDTO) {
-//    }
 
     @GetMapping("{id}")
     public HotelDTO findById(@PathVariable Long id) {
