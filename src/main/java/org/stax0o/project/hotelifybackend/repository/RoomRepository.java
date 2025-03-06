@@ -23,6 +23,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             "OR EXISTS (" +
             "   SELECT b FROM Booking b " +
             "   WHERE b.room = r " +
+            "   AND b.room.hotel.id = :hotelId" +
             "   AND b.paymentStatus = 'UNPAID' " +
             "   AND b.startDate < :today" +
             ")")

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.stax0o.project.hotelifybackend.dto.UserDTO;
 import org.stax0o.project.hotelifybackend.entity.User;
-import org.stax0o.project.hotelifybackend.mapper.SignUpMapper;
+import org.stax0o.project.hotelifybackend.mapper.RegisterMapper;
 import org.stax0o.project.hotelifybackend.mapper.UserMapper;
 import org.stax0o.project.hotelifybackend.repository.UserRepository;
 
@@ -18,7 +18,7 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final SignUpMapper signUpMapper;
+    private final RegisterMapper signUpMapper;
 
     public UserDTO create(User user) {
         if (userRepository.existsByEmail(user.getEmail())){

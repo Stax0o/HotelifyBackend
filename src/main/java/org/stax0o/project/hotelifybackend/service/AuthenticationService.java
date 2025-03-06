@@ -9,7 +9,7 @@ import org.stax0o.project.hotelifybackend.dto.JwtAuthenticationDTO;
 import org.stax0o.project.hotelifybackend.dto.LoginDTO;
 import org.stax0o.project.hotelifybackend.dto.RegisterDTO;
 import org.stax0o.project.hotelifybackend.entity.User;
-import org.stax0o.project.hotelifybackend.mapper.SignUpMapper;
+import org.stax0o.project.hotelifybackend.mapper.RegisterMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +18,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final SignUpMapper signUpMapper;
+    private final RegisterMapper signUpMapper;
 
     public JwtAuthenticationDTO signUp(RegisterDTO request) {
         User user = signUpMapper.toEntity(request);

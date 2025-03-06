@@ -50,8 +50,14 @@ public class RoomService {
                                                    LocalDate endDate) {
         List<Room> rooms = roomRepository.findAvailableRooms(hotelId, startDate, endDate, LocalDate.now());
         return rooms.stream()
-                .map(room -> new RoomTypeDTO(room.getId(), room.getName()))
-                .distinct()
+                .map(room -> new RoomTypeDTO(room.getId(), room.getName(), room.getPrice()))
+                .collect(Collectors.toMap(
+                        RoomTypeDTO::name,
+                        dto -> dto,
+                        (existing, replacement) -> existing
+                ))
+                .values()
+                .stream()
                 .toList();
     }
 

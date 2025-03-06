@@ -5,10 +5,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.stax0o.project.hotelifybackend.dto.HotelDTO;
+import org.stax0o.project.hotelifybackend.dto.HotelsWithPriceDTO;
+import org.stax0o.project.hotelifybackend.dto.RoomTypeDTO;
 import org.stax0o.project.hotelifybackend.entity.Hotel;
 import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.mapper.HotelMapper;
+import org.stax0o.project.hotelifybackend.mapper.HotelsWithPriceMapper;
 import org.stax0o.project.hotelifybackend.repository.HotelRepository;
+import org.stax0o.project.hotelifybackend.repository.RoomRepository;
 import org.stax0o.project.hotelifybackend.repository.UserRepository;
 
 import java.io.IOException;
@@ -22,6 +26,8 @@ public class HotelService {
     private final HotelMapper hotelMapper;
     private final UserRepository userRepository;
     private final SaveImageService saveImageService;
+    private final RoomService roomService;
+    private final HotelsWithPriceMapper hotelsWithPriceMapper;
 
     @Transactional
     public HotelDTO create(HotelDTO hotelDTO, List<MultipartFile> images) {
@@ -66,7 +72,24 @@ public class HotelService {
         return hotelMapper.toDTO(hotelRepository.save(hotel));
     }
 
-    public List<HotelDTO> findAll() {
-        return hotelMapper.toDTOList(hotelRepository.findAll());
+    public List<HotelsWithPriceDTO> findAll() {
+        LocalDate date = LocalDate.of(1970, 1, 1);
+
+        return hotelRepository.findHotelsWithRoomsPricedAboveZero().stream()
+                .map(hotel -> {
+                    List<RoomTypeDTO> roomTypes = roomService.getAvailableRoomTypes(
+                            hotel.getId(),
+                            date,
+                            date
+                    );
+
+                    Double minPrice = roomTypes.stream()
+                            .mapToDouble(RoomTypeDTO::price)
+                            .min()
+                            .orElse(0.0);
+
+                    return hotelsWithPriceMapper.toDTO(hotel, minPrice);
+                })
+                .toList();
     }
 }

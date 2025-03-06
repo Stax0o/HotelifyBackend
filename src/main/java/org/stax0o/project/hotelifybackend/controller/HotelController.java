@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.stax0o.project.hotelifybackend.dto.HotelDTO;
+import org.stax0o.project.hotelifybackend.dto.HotelsWithPriceDTO;
 import org.stax0o.project.hotelifybackend.service.HotelService;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class HotelController {
     }
 
     @GetMapping("/all")
-    public List<HotelDTO> findAll() {
+    public List<HotelsWithPriceDTO> findAll() {
         return hotelService.findAll();
     }
 

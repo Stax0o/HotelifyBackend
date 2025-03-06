@@ -5,6 +5,6 @@ import org.stax0o.project.hotelifybackend.dto.RegisterDTO;
 import org.stax0o.project.hotelifybackend.entity.User;
 
 @Mapper(componentModel = "spring")
-public interface SignUpMapper {
+public interface RegisterMapper {
     User toEntity(RegisterDTO sign);
 }
