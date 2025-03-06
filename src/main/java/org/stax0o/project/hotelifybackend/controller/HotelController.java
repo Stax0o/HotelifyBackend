@@ -7,12 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.stax0o.project.hotelifybackend.dto.HotelDTO;
 import org.stax0o.project.hotelifybackend.dto.HotelsWithPriceDTO;
+import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.service.HotelService;
 
 import java.util.List;
@@ -50,10 +52,11 @@ public class HotelController {
         return hotelService.findAll();
     }
 
-//    @GetMapping
-//    public List<HotelDTO> findByUserId(@RequestParam Long userId) {
-//        return hotelService.findByUserId(userId);
-//    }
+    @GetMapping("/my")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public List<HotelDTO> findByUserId(@AuthenticationPrincipal User user) {
+        return hotelService.findByUserId(user.getId());
+    }
 //
 //    @PutMapping
 //    public HotelDTO update(@Valid @RequestBody HotelDTO hotelDTO) {

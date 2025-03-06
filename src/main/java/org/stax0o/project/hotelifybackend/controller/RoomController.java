@@ -2,10 +2,13 @@ package org.stax0o.project.hotelifybackend.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.stax0o.project.hotelifybackend.dto.RoomDTO;
 import org.stax0o.project.hotelifybackend.dto.RoomTypeDTO;
+import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.service.RoomService;
 
 import java.time.LocalDate;
@@ -19,8 +22,11 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping
-    public RoomDTO create(@Valid @RequestBody RoomDTO roomDTO) {
-        return roomService.create(roomDTO);
+    @PreAuthorize("hasAuthority('OWNER')")
+    public List<RoomDTO> create(@Valid @RequestBody RoomDTO roomDTO,
+                          @AuthenticationPrincipal User user,
+                          @RequestParam Integer count) {
+        return roomService.create(roomDTO, user, count);
     }
 
     @GetMapping("{id}")

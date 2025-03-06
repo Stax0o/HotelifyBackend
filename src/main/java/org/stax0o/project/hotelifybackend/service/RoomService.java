@@ -9,12 +9,15 @@ import org.stax0o.project.hotelifybackend.dto.RoomDTO;
 import org.stax0o.project.hotelifybackend.dto.RoomTypeDTO;
 import org.stax0o.project.hotelifybackend.entity.Hotel;
 import org.stax0o.project.hotelifybackend.entity.Room;
+import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.mapper.RoomMapper;
 import org.stax0o.project.hotelifybackend.repository.HotelRepository;
 import org.stax0o.project.hotelifybackend.repository.RoomRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,12 +27,19 @@ public class RoomService {
     private final HotelRepository hotelRepository;
     private final RoomMapper roomMapper;
 
-    public RoomDTO create(RoomDTO roomDTO) {
+    public List<RoomDTO> create(RoomDTO roomDTO, User user, Integer count) {
         Hotel hotel = hotelRepository.findById(roomDTO.hotelId())
                 .orElseThrow(() -> new IllegalArgumentException("Такого отеля не существует"));
-        Room room = roomMapper.toEntity(roomDTO);
-        room.setHotel(hotel);
-        return roomMapper.toDTO(roomRepository.save(room));
+        if (!Objects.equals(hotel.getUser().getId(), user.getId())) {
+            throw new IllegalArgumentException("Данный отель не принадлежит этому пользователю");
+        }
+        List<RoomDTO> roomDTOList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            Room room = roomMapper.toEntity(roomDTO);
+            room.setHotel(hotel);
+            roomDTOList.add(roomMapper.toDTO(roomRepository.save(room)));
+        }
+        return roomDTOList;
     }
 
     public RoomDTO findById(Long id) {
