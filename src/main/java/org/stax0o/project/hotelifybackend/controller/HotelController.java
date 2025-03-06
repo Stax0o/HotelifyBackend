@@ -28,7 +28,9 @@ public class HotelController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('OWNER')")
-    public HotelDTO create(@Valid @RequestPart("hotel") String hotelDTOJson, @RequestPart("images") List<MultipartFile> images) {
+    public HotelDTO create(@Valid @RequestPart("hotel") String hotelDTOJson,
+                           @RequestPart("images") List<MultipartFile> images,
+                           @AuthenticationPrincipal User user) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         HotelDTO hotelDTO;
@@ -39,7 +41,7 @@ public class HotelController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный формат JSON", e);
         }
 
-        return hotelService.create(hotelDTO, images);
+        return hotelService.create(hotelDTO, images, user);
     }
 
     @GetMapping("{id}")

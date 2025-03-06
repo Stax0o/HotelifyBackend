@@ -30,9 +30,7 @@ public class HotelService {
     private final HotelsWithPriceMapper hotelsWithPriceMapper;
 
     @Transactional
-    public HotelDTO create(HotelDTO hotelDTO, List<MultipartFile> images) {
-        User user = userRepository.findById(hotelDTO.userId())
-                .orElseThrow(() -> new IllegalArgumentException("Такого пользователя не существует"));
+    public HotelDTO create(HotelDTO hotelDTO, List<MultipartFile> images, User user) {
         Hotel hotel = hotelMapper.toEntity(hotelDTO);
         hotel.setUser(user);
         try {
