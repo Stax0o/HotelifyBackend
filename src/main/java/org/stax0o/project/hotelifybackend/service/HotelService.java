@@ -11,8 +11,8 @@ import org.stax0o.project.hotelifybackend.entity.Hotel;
 import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.mapper.HotelMapper;
 import org.stax0o.project.hotelifybackend.mapper.HotelsWithPriceMapper;
+import org.stax0o.project.hotelifybackend.repository.BookingRepository;
 import org.stax0o.project.hotelifybackend.repository.HotelRepository;
-import org.stax0o.project.hotelifybackend.repository.RoomRepository;
 import org.stax0o.project.hotelifybackend.repository.UserRepository;
 
 import java.io.IOException;
@@ -29,6 +29,7 @@ public class HotelService {
     private final SaveImageService saveImageService;
     private final RoomService roomService;
     private final HotelsWithPriceMapper hotelsWithPriceMapper;
+    private final BookingRepository bookingRepository;
 
     @Transactional
     public HotelDTO create(HotelDTO hotelDTO, List<MultipartFile> images, User user) {
@@ -46,6 +47,7 @@ public class HotelService {
     public HotelDTO findById(Long id) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Такого отеля не существует"));
+        bookingRepository.deleteOverdueUnpaidBookingsByHotel(id, LocalDate.now());
         return hotelMapper.toDTO(hotel);
     }
 

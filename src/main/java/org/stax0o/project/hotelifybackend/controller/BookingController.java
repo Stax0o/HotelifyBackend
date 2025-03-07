@@ -2,14 +2,11 @@ package org.stax0o.project.hotelifybackend.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.stax0o.project.hotelifybackend.dto.BookingDTO;
-import org.stax0o.project.hotelifybackend.entity.Booking;
 import org.stax0o.project.hotelifybackend.entity.User;
-import org.stax0o.project.hotelifybackend.enums.UserRole;
 import org.stax0o.project.hotelifybackend.mapper.BookingMapper;
 import org.stax0o.project.hotelifybackend.response.BookingResponse;
 import org.stax0o.project.hotelifybackend.service.BookingService;

@@ -3,14 +3,13 @@ package org.stax0o.project.hotelifybackend.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.stax0o.project.hotelifybackend.dto.RoomDTO;
 import org.stax0o.project.hotelifybackend.dto.RoomTypeDTO;
 import org.stax0o.project.hotelifybackend.entity.Hotel;
 import org.stax0o.project.hotelifybackend.entity.Room;
 import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.mapper.RoomMapper;
+import org.stax0o.project.hotelifybackend.repository.BookingRepository;
 import org.stax0o.project.hotelifybackend.repository.HotelRepository;
 import org.stax0o.project.hotelifybackend.repository.RoomRepository;
 
@@ -26,6 +25,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final HotelRepository hotelRepository;
     private final RoomMapper roomMapper;
+    private final BookingRepository bookingRepository;
 
     public List<RoomDTO> create(RoomDTO roomDTO, User user, Integer count) {
         Hotel hotel = hotelRepository.findById(roomDTO.hotelId())
@@ -55,12 +55,15 @@ public class RoomService {
         return roomMapper.toDTOList(roomRepository.findByHotelId(hotelId));
     }
 
+
     public List<RoomTypeDTO> getAvailableRoomTypes(Long hotelId,
                                                    LocalDate startDate,
                                                    LocalDate endDate) {
+
         List<Room> rooms = roomRepository.findAvailableRooms(hotelId, startDate, endDate, LocalDate.now());
+
         return rooms.stream()
-                .map(room -> new RoomTypeDTO(room.getId(), room.getName(), room.getPrice()))
+                .map(room -> new RoomTypeDTO(room.getId(), room.getName(), room.getPrice(), 0))
                 .collect(Collectors.toMap(
                         RoomTypeDTO::name,
                         dto -> dto,
