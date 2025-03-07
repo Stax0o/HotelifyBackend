@@ -31,15 +31,7 @@ public class HotelController {
     public HotelDTO create(@Valid @RequestPart("hotel") String hotelDTOJson,
                            @RequestPart("images") List<MultipartFile> images,
                            @AuthenticationPrincipal User user) {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        HotelDTO hotelDTO;
-
-        try {
-            hotelDTO = objectMapper.readValue(hotelDTOJson, HotelDTO.class);
-        } catch (JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный формат JSON", e);
-        }
+        HotelDTO hotelDTO = jsonToDTO(hotelDTOJson);
 
         return hotelService.create(hotelDTO, images, user);
     }
@@ -59,10 +51,26 @@ public class HotelController {
     public List<HotelDTO> findByUserId(@AuthenticationPrincipal User user) {
         return hotelService.findByUserId(user.getId());
     }
-//
-//    @PutMapping
-//    public HotelDTO update(@Valid @RequestBody HotelDTO hotelDTO) {
-//        return hotelService.update(hotelDTO);
-//    }
+
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('OWNER')")
+    public HotelDTO update(@Valid @RequestPart("hotel") String hotelDTOJson,
+                           @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                           @AuthenticationPrincipal User user) {
+        HotelDTO hotelDTO = jsonToDTO(hotelDTOJson);
+        return hotelService.update(hotelDTO, images, user);
+    }
+
+    private HotelDTO jsonToDTO(String hotelDTOJson) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        HotelDTO hotelDTO;
+
+        try {
+            hotelDTO = objectMapper.readValue(hotelDTOJson, HotelDTO.class);
+        } catch (JsonProcessingException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный формат JSON", e);
+        }
+        return hotelDTO;
+    }
 }
 

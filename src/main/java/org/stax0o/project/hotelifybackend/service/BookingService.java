@@ -30,6 +30,7 @@ public class BookingService {
     private final BookingMapper bookingMapper;
     private final BookingResponseMapper bookingResponseMapper;
 
+    @Transactional
     public BookingDTO create(Booking booking, User user) {
         if (booking.getCost() != null) {
             throw new IllegalStateException("cost должен быть пустым при создании бронирования");
@@ -37,6 +38,17 @@ public class BookingService {
 
         Room room = roomRepository.findById(booking.getRoom().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Такой комнаты не существует"));
+
+        boolean isAvailableRoom = roomRepository.findAvailableRooms(room.getHotel().getId(),
+                        booking.getStartDate(),
+                        booking.getEndDate(),
+                        LocalDate.now())
+                .stream()
+                .anyMatch(roomItem -> Objects.equals(roomItem.getId(), booking.getRoom().getId()));
+
+        if (!isAvailableRoom) {
+            throw new IllegalArgumentException("Комната уже занята");
+        }
 
         booking.setUser(user);
         booking.setRoom(room);
@@ -67,7 +79,7 @@ public class BookingService {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Такой комнаты не существует"));
         Hotel hotel = room.getHotel();
-        if (!Objects.equals(hotel.getId(), user.getId())){
+        if (!Objects.equals(hotel.getId(), user.getId())) {
             throw new IllegalArgumentException("Комната не принадлежит данному пользователю");
         }
         List<Booking> bookingList = bookingRepository.findByRoomId(id);

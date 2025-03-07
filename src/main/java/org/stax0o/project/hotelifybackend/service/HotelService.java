@@ -18,6 +18,7 @@ import org.stax0o.project.hotelifybackend.repository.UserRepository;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -55,9 +56,12 @@ public class HotelService {
     }
 
     @Transactional
-    public HotelDTO update(HotelDTO newHotelDTO) {
+    public HotelDTO update(HotelDTO newHotelDTO, List<MultipartFile> images, User user) {
         Hotel hotel = hotelRepository.findById(newHotelDTO.id())
                 .orElseThrow(() -> new IllegalArgumentException("Такого отеля не существует"));
+        if (!Objects.equals(hotel.getUser().getId(), user.getId())) {
+            throw new IllegalArgumentException("Отель не принадлежит данному пользователю");
+        }
 
         hotel.setName(newHotelDTO.name());
         hotel.setDescription(newHotelDTO.description());
@@ -66,6 +70,14 @@ public class HotelService {
         hotel.setPhone(newHotelDTO.phone());
         hotel.setEmail(newHotelDTO.email());
         hotel.setUpdatedAt(LocalDate.now());
+        if (images != null && !images.isEmpty()) {
+            try {
+                hotel.getImages().clear();
+                hotel.getImages().addAll(saveImageService.saveImage(images, hotel));
+            } catch (IOException e) {
+                throw new IllegalStateException("Ошибка сохранения изображений");
+            }
+        }
 
         return hotelMapper.toDTO(hotelRepository.save(hotel));
     }
