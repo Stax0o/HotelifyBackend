@@ -37,7 +37,7 @@ public class BookingController {
 //        return bookingService.findById(id);
 //    }
 
-////    todo что-то странное с ролями, надо разобраться
+////    todo что-то странное с ролями, нужно разобраться
 //    @GetMapping()
 //    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 //    public List<BookingResponse> findByUserIdOrRoomId(@RequestParam(required = false) Long userId,
