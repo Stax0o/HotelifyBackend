@@ -29,6 +29,7 @@ public class HotelController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('OWNER')")
     public HotelDTO create(@Valid @RequestPart("hotel") String hotelDTOJson,
+                           //                           todo убрать value
                            @RequestPart("images") List<MultipartFile> images,
                            @AuthenticationPrincipal User user) {
         HotelDTO hotelDTO = jsonToDTO(hotelDTOJson);
@@ -55,6 +56,7 @@ public class HotelController {
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('OWNER')")
     public HotelDTO update(@Valid @RequestPart("hotel") String hotelDTOJson,
+//                           todo убрать value
                            @RequestPart(value = "images", required = false) List<MultipartFile> images,
                            @AuthenticationPrincipal User user) {
         HotelDTO hotelDTO = jsonToDTO(hotelDTOJson);

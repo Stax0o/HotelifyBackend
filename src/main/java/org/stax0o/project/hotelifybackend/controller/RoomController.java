@@ -24,8 +24,8 @@ public class RoomController {
     @PostMapping
     @PreAuthorize("hasAuthority('OWNER')")
     public List<RoomDTO> create(@Valid @RequestBody RoomDTO roomDTO,
-                          @AuthenticationPrincipal User user,
-                          @RequestParam Integer count) {
+                                @AuthenticationPrincipal User user,
+                                @RequestParam(required = false, defaultValue = "1") Integer count) {
         return roomService.create(roomDTO, user, count);
     }
 
@@ -35,8 +35,10 @@ public class RoomController {
     }
 
     @GetMapping
-    public List<RoomDTO> findByHotelId(@RequestParam Long hotelId) {
-        return roomService.findByHotelId(hotelId);
+    @PreAuthorize("hasAuthority('OWNER')")
+    public List<RoomTypeDTO> findByHotelId(@RequestParam Long hotelId,
+                                           @AuthenticationPrincipal User user) {
+        return roomService.findByHotelId(hotelId, user);
     }
 
     @GetMapping("/available-types")

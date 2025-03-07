@@ -48,11 +48,28 @@ public class RoomService {
         return roomMapper.toDTO(room);
     }
 
-    public List<RoomDTO> findByHotelId(Long hotelId) {
-        hotelRepository.findById(hotelId)
+    public List<RoomTypeDTO> findByHotelId(Long hotelId, User user) {
+        Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new IllegalStateException("Отеля с таким id не существует"));
+        if (!Objects.equals(hotel.getUser().getId(), user.getId())) {
+            throw new IllegalStateException("Отель не принадлежит этому пользователю");
+        }
 
-        return roomMapper.toDTOList(roomRepository.findByHotelId(hotelId));
+        List<Room> rooms = roomRepository.findByHotelId(hotelId);
+        return rooms.stream()
+                .collect(Collectors.groupingBy(
+                        Room::getName,
+                        Collectors.collectingAndThen(
+                                Collectors.toList(),
+                                list -> {
+                                    Room anyRoom = list.getFirst();
+                                    return new RoomTypeDTO(anyRoom.getId(), anyRoom.getName(), anyRoom.getPrice(), list.size());
+                                }
+                        )
+                ))
+                .values()
+                .stream()
+                .toList();
     }
 
 
