@@ -29,4 +29,7 @@ public class Room {
 
     @Column(name = "updated_at")
     private LocalDate updatedAt;
+
+    @Column(nullable = false)
+    private Boolean isDelete = false;
 }

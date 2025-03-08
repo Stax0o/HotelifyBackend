@@ -9,10 +9,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
-    List<Room> findByHotelId(Long hotelId);
+    List<Room> findByHotelIdAndIsDeleteFalse(Long hotelId);
 
     @Query("SELECT r FROM Room r WHERE " +
             "r.hotel.id = :hotelId AND " +
+            "r.isDelete = false AND " +
             "NOT EXISTS (SELECT b FROM Booking b WHERE " +
             "           b.room = r AND " +
             "           b.startDate < :endDate AND " +
@@ -24,4 +25,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             @Param("endDate") LocalDate endDate,
             @Param("today") LocalDate today
     );
+
+    List<Room> findByNameAndIsDeleteFalse(String name);
 }
