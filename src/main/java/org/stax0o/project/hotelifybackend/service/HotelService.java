@@ -84,15 +84,13 @@ public class HotelService {
         return hotelMapper.toDTO(hotelRepository.save(hotel));
     }
 
-    public List<HotelsWithPriceDTO> findAll() {
-        LocalDate date = LocalDate.of(1970, 1, 1);
-
-        return hotelRepository.findHotelsWithRoomsPricedAboveZero().stream()
+    public List<HotelsWithPriceDTO> findAll(LocalDate date, String city, Double price) {
+        List<HotelsWithPriceDTO> hotels = hotelRepository.findHotelsWithRoomsPricedAboveZero().stream()
                 .map(hotel -> {
                     List<RoomTypeDTO> roomTypes = roomService.getAvailableRoomTypes(
                             hotel.getId(),
                             date,
-                            date
+                            date.plusDays(1)
                     );
 
                     Double minPrice = roomTypes.stream()
@@ -102,6 +100,11 @@ public class HotelService {
 
                     return hotelsWithPriceMapper.toDTO(hotel, minPrice);
                 })
+                .toList();
+
+        return hotels.stream()
+                .filter(hotel -> city.isEmpty() || hotel.city().equals(city))
+                .filter(hotel -> price == 0 || hotel.minPrice() <= price)
                 .toList();
     }
 }

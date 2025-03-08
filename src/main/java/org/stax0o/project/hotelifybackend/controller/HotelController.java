@@ -17,6 +17,7 @@ import org.stax0o.project.hotelifybackend.dto.HotelsWithPriceDTO;
 import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.service.HotelService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -43,8 +44,11 @@ public class HotelController {
     }
 
     @GetMapping("/all")
-    public List<HotelsWithPriceDTO> findAll() {
-        return hotelService.findAll();
+    public List<HotelsWithPriceDTO> findAll(
+            @RequestParam(required = false, defaultValue = "1970-01-01") LocalDate date,
+            @RequestParam(required = false, defaultValue = "") String city,
+            @RequestParam(required = false, defaultValue = "0.0") Double price) {
+        return hotelService.findAll(date, city, price);
     }
 
     @GetMapping("/my")
