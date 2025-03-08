@@ -55,10 +55,19 @@ public class RoomController {
                                          @RequestBody RoomTypeDTO newRoomTypeDTO) {
         try {
             roomService.update(user, newRoomTypeDTO);
+            return ResponseEntity.ok("Комнаты обновлены удалены");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ошибка при обновлены комнат");
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> delete(@AuthenticationPrincipal User user, @PathVariable Long id){
+        try {
+            roomService.delete(user, id);
             return ResponseEntity.ok("Комнаты успешно удалены");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ошибка при удалении комнат");
         }
     }
-
 }

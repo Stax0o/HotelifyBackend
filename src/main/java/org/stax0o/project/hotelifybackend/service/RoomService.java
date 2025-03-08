@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -92,7 +93,8 @@ public class RoomService {
 
     @Transactional
     public void update(User user, RoomTypeDTO newRoomTypeDTO) {
-        List<Room> rooms = roomRepository.findByNameAndIsDeleteFalse(newRoomTypeDTO.name());
+        String roomType = roomRepository.findByIdAndIsDeleteFalse(newRoomTypeDTO.id()).getFirst().getName();
+        List<Room> rooms = roomRepository.findByNameAndIsDeleteFalse(roomType);
 
         if (rooms.isEmpty()) {
             throw new IllegalArgumentException("Комнат такого типа нет");
@@ -126,11 +128,21 @@ public class RoomService {
                 rooms.get(i).setIsDelete(true);
             }
 
-            List<Room> newRooms = roomRepository.findByNameAndIsDeleteFalse(newRoomTypeDTO.name());
+            List<Room> newRooms = roomRepository.findByNameAndIsDeleteFalse(roomType);
             for (Room room : newRooms) {
                 room.setName(newRoomTypeDTO.name());
                 room.setPrice(newRoomTypeDTO.price());
             }
         }
+    }
+
+    @Transactional
+    public void delete(User user, Long id) {
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Такой комнаты не существует"));
+        if (!Objects.equals(room.getHotel().getUser().getId(), user.getId())) {
+            throw new IllegalArgumentException("Комнаты не принадлежат данному пользователю");
+        }
+        roomRepository.markRoomsAsDelete(room.getName());
     }
 }

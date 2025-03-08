@@ -1,8 +1,10 @@
 package org.stax0o.project.hotelifybackend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import org.stax0o.project.hotelifybackend.entity.Room;
 
 import java.time.LocalDate;
@@ -27,4 +29,11 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     );
 
     List<Room> findByNameAndIsDeleteFalse(String name);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Room r SET r.isDelete = true WHERE r.name = :name")
+    void markRoomsAsDelete(@Param("name") String name);
+
+    List<Room> findByIdAndIsDeleteFalse(Long id);
 }

@@ -9,6 +9,6 @@ import java.util.List;
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
     List<Hotel> findByUserId(Long id);
 
-    @Query("SELECT DISTINCT h FROM Hotel h JOIN Room r ON r.hotel.id = h.id WHERE r.price > 0")
+    @Query("SELECT DISTINCT h FROM Hotel h JOIN Room r ON r.hotel.id = h.id WHERE r.price > 0 AND r.isDelete = false")
     List<Hotel> findHotelsWithRoomsPricedAboveZero();
 }
