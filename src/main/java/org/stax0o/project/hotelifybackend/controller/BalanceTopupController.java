@@ -19,8 +19,9 @@ public class BalanceTopupController {
     private final BalanceTopupService topupService;
 
     @PostMapping
-    public BalanceTopupDTO create(@Valid @RequestBody BalanceTopupDTO topupDTO) {
-        return topupService.create(topupDTO);
+    public BalanceTopupDTO create(@Valid @RequestBody BalanceTopupDTO topupDTO,
+                                  @AuthenticationPrincipal User user) {
+        return topupService.create(topupDTO, user);
     }
 
     @GetMapping

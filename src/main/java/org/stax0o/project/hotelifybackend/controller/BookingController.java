@@ -31,6 +31,11 @@ public class BookingController {
         return bookingService.findByUserId(user.getId());
     }
 
+    @PutMapping("{id}")
+    public BookingDTO changePaymentStatusToPAID(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        return bookingService.changePaymentStatusToPAID(id, user);
+    }
+
 //    @GetMapping("{id}")
 //    @PreAuthorize("hasRole('ADMIN')")
 //    public BookingDTO findById(@PathVariable Long id) {
@@ -50,10 +55,5 @@ public class BookingController {
 //        } else {
 //            throw new IllegalArgumentException("Необходимо ввести id пользователя или комнаты");
 //        }
-//    }
-//
-//    @PutMapping("{id}")
-//    public BookingDTO changePaymentStatusToPAID(@PathVariable Long id, @AuthenticationPrincipal User user) {
-//        return bookingService.changePaymentStatusToPAID(id, user);
 //    }
 }

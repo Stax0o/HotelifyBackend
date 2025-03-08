@@ -7,7 +7,6 @@ import org.stax0o.project.hotelifybackend.enums.PaymentMethod;
 public record BalanceTopupDTO(
         Long id,
 
-        @NotNull(message = "id пользователя не должен быть пустым")
         Long userId,
 
         @NotNull(message = "Способ оплаты не может быть пустым")

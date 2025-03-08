@@ -93,17 +93,19 @@ public class BookingService {
         if (!booking.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("Нет прав на изменение статуса оплаты другого пользователя");
         }
-        updateBalance(booking.getUser().getId(), booking.getCost(), true);
-        updateBalance(booking.getRoom().getHotel().getUser().getId(), booking.getCost(), false);
+        if (booking.getPaymentStatus() == PaymentStatus.PAID) {
+            throw new IllegalArgumentException("Бронирование уже оплачено");
+        }
+
+        updateBalance(user, booking.getCost(), true);
+        updateBalance(booking.getRoom().getHotel().getUser(), booking.getCost(), false);
 
         booking.setPaymentStatus(PaymentStatus.PAID);
 
         return bookingMapper.toDTO(bookingRepository.save(booking));
     }
 
-    private void updateBalance(Long userId, double amount, boolean isSpent) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("Пользователя, который осуществлял бронирование, больше не существует"));
+    private void updateBalance(User user, double amount, boolean isSpent) {
         double newBalance = isSpent ? user.getBalance() - amount : user.getBalance() + amount;
         if (newBalance < 0) {
             throw new IllegalArgumentException("У пользователя недостаточно средств");

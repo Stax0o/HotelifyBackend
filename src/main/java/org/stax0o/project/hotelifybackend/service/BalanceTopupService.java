@@ -21,9 +21,7 @@ public class BalanceTopupService {
     private final UserRepository userRepository;
 
     @Transactional
-    public BalanceTopupDTO create(BalanceTopupDTO balanceTopupDTO) {
-        User user = userRepository.findById(balanceTopupDTO.userId())
-                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
+    public BalanceTopupDTO create(BalanceTopupDTO balanceTopupDTO, User user) {
 
         BalanceTopup balanceTopup = balanceTopupMapper.toEntity(balanceTopupDTO);
 
