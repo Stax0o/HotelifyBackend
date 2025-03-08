@@ -96,6 +96,9 @@ public class BookingService {
         if (booking.getPaymentStatus() == PaymentStatus.PAID) {
             throw new IllegalArgumentException("Бронирование уже оплачено");
         }
+        if (booking.getStartDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Бронирование просрочено");
+        }
 
         updateBalance(user, booking.getCost(), true);
         updateBalance(booking.getRoom().getHotel().getUser(), booking.getCost(), false);
