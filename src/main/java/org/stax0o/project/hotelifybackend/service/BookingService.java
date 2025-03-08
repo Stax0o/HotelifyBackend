@@ -66,10 +66,6 @@ public class BookingService {
         return bookingMapper.toDTO(booking);
     }
 
-//    public List<Booking> getByUserId(Long id) {
-//        return bookingRepository.findByUserId(id);
-//    }
-
     public List<BookingResponse> findByUserId(Long id) {
         List<Booking> bookingList = bookingRepository.findByUserId(id);
         return bookingResponseMapper.toDTOList(bookingList);
@@ -106,6 +102,15 @@ public class BookingService {
         booking.setPaymentStatus(PaymentStatus.PAID);
 
         return bookingMapper.toDTO(bookingRepository.save(booking));
+    }
+
+    public void deleteBooking(User user, Long id) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Бронирования с таким id не существует"));
+        if (!Objects.equals(booking.getUser().getId(), user.getId())) {
+            throw new IllegalArgumentException("Бронирование не принадлежит этому пользователю");
+        }
+        bookingRepository.delete(booking);
     }
 
     private void updateBalance(User user, double amount, boolean isSpent) {

@@ -2,6 +2,8 @@ package org.stax0o.project.hotelifybackend.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +29,7 @@ public class BookingController {
     }
 
     @GetMapping("/my")
-    public List<BookingResponse> getBookingsCurrentUser(@AuthenticationPrincipal User user){
+    public List<BookingResponse> getBookingsCurrentUser(@AuthenticationPrincipal User user) {
         return bookingService.findByUserId(user.getId());
     }
 
@@ -36,24 +38,14 @@ public class BookingController {
         return bookingService.changePaymentStatusToPAID(id, user);
     }
 
-//    @GetMapping("{id}")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public BookingDTO findById(@PathVariable Long id) {
-//        return bookingService.findById(id);
-//    }
-
-////    todo нужно разобраться с ролями
-//    @GetMapping()
-//    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-//    public List<BookingResponse> findByUserIdOrRoomId(@RequestParam(required = false) Long userId,
-//                                                      @RequestParam(required = false) Long roomId,
-//                                                      @AuthenticationPrincipal User user) {
-//        if (userId != null && user.getUserRole() == UserRole.ADMIN) {
-//            return bookingService.findByUserId(userId);
-//        } else if (roomId != null && user.getUserRole() == UserRole.OWNER) {
-//            return bookingService.findByRoomId(roomId, user);
-//        } else {
-//            throw new IllegalArgumentException("Необходимо ввести id пользователя или комнаты");
-//        }
-//    }
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteBooking(@AuthenticationPrincipal User user,
+                                                @PathVariable Long id) {
+        try {
+            bookingService.deleteBooking(user, id);
+            return ResponseEntity.ok("Бронирование успешно удалено");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ошибка при удалении бронирования");
+        }
+    }
 }
