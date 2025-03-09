@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.stax0o.project.hotelifybackend.dto.BookingDTO;
+import org.stax0o.project.hotelifybackend.dto.HotelBookingsDTO;
 import org.stax0o.project.hotelifybackend.entity.Booking;
 import org.stax0o.project.hotelifybackend.entity.Hotel;
 import org.stax0o.project.hotelifybackend.entity.Room;
@@ -11,7 +12,9 @@ import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.enums.PaymentStatus;
 import org.stax0o.project.hotelifybackend.mapper.BookingMapper;
 import org.stax0o.project.hotelifybackend.mapper.BookingResponseMapper;
+import org.stax0o.project.hotelifybackend.mapper.HotelBookingsMapper;
 import org.stax0o.project.hotelifybackend.repository.BookingRepository;
+import org.stax0o.project.hotelifybackend.repository.HotelRepository;
 import org.stax0o.project.hotelifybackend.repository.RoomRepository;
 import org.stax0o.project.hotelifybackend.repository.UserRepository;
 import org.stax0o.project.hotelifybackend.response.BookingResponse;
@@ -29,6 +32,8 @@ public class BookingService {
     private final UserRepository userRepository;
     private final BookingMapper bookingMapper;
     private final BookingResponseMapper bookingResponseMapper;
+    private final HotelRepository hotelRepository;
+    private final HotelBookingsMapper hotelBookingsMapper;
 
     @Transactional
     public BookingDTO create(Booking booking, User user) {
@@ -80,6 +85,16 @@ public class BookingService {
         }
         List<Booking> bookingList = bookingRepository.findByRoomId(id);
         return bookingResponseMapper.toDTOList(bookingList);
+    }
+
+    public List<HotelBookingsDTO> findByHotelId(User user, Long hotelId) {
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new IllegalArgumentException("Отель с таким id не найден"));
+        if (!Objects.equals(hotel.getUser().getId(), user.getId())) {
+            throw new IllegalArgumentException("Отель не принадлежит данному пользователю");
+        }
+
+        return hotelBookingsMapper.toDTOList(bookingRepository.findByEndDateAfter(LocalDate.now()));
     }
 
     @Transactional

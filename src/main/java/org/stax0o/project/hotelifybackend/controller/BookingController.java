@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.stax0o.project.hotelifybackend.dto.BookingDTO;
+import org.stax0o.project.hotelifybackend.dto.HotelBookingsDTO;
 import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.mapper.BookingMapper;
 import org.stax0o.project.hotelifybackend.response.BookingResponse;
@@ -36,6 +37,12 @@ public class BookingController {
     @PutMapping("{id}")
     public BookingDTO changePaymentStatusToPAID(@PathVariable Long id, @AuthenticationPrincipal User user) {
         return bookingService.changePaymentStatusToPAID(id, user);
+    }
+
+    @GetMapping
+    public List<HotelBookingsDTO> getBookingsByHotelId(@AuthenticationPrincipal User user,
+                                                       @RequestParam Long hotelId) {
+        return bookingService.findByHotelId(user, hotelId);
     }
 
     @DeleteMapping("{id}")

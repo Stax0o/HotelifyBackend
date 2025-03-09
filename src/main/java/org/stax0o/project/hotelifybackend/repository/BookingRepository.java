@@ -23,4 +23,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "b.paymentStatus = 'UNPAID'")
     void deleteOverdueUnpaidBookingsByHotel(@Param("hotelId") Long hotelId,
                                             @Param("today") LocalDate today);
+
+    List<Booking> findByEndDateAfter(LocalDate endDateAfter);
 }
