@@ -9,7 +9,6 @@ import org.stax0o.project.hotelifybackend.entity.Hotel;
 import org.stax0o.project.hotelifybackend.entity.Room;
 import org.stax0o.project.hotelifybackend.entity.User;
 import org.stax0o.project.hotelifybackend.mapper.RoomMapper;
-import org.stax0o.project.hotelifybackend.repository.BookingRepository;
 import org.stax0o.project.hotelifybackend.repository.HotelRepository;
 import org.stax0o.project.hotelifybackend.repository.RoomRepository;
 
@@ -17,7 +16,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
