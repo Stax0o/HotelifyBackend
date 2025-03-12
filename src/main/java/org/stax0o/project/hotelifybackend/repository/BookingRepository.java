@@ -24,5 +24,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     void deleteOverdueUnpaidBookingsByHotel(@Param("hotelId") Long hotelId,
                                             @Param("today") LocalDate today);
 
-    List<Booking> findByEndDateAfter(LocalDate endDateAfter);
+    @Query("SELECT b FROM Booking b WHERE b.endDate > :endDateAfter AND b.room.hotel.id = :hotelId")
+    List<Booking> findActiveBookingsByHotel(@Param("endDateAfter") LocalDate endDateAfter, @Param("hotelId") Long hotelId);
 }

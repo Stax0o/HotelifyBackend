@@ -94,7 +94,7 @@ public class BookingService {
             throw new IllegalArgumentException("Отель не принадлежит данному пользователю");
         }
 
-        return hotelBookingsMapper.toDTOList(bookingRepository.findByEndDateAfter(LocalDate.now()));
+        return hotelBookingsMapper.toDTOList(bookingRepository.findActiveBookingsByHotel(LocalDate.now(), hotelId));
     }
 
     @Transactional
